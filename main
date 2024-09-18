@@ -1,0 +1,114 @@
+#include <iostream>
+
+using namespace std;
+
+class QuadraticEquation {
+private:
+  double a, b, c;
+public:
+  explicit QuadraticEquation(double ta = 0, double tb = 0, double tc = 0) : a(ta), b(tb), c(tc) {
+    cout << "Created: " << *this << endl;
+  }
+  QuadraticEquation(const QuadraticEquation& src) : a(src.a), b(src.b), c(src.c) {
+    cout << "Copied: " << *this << endl;
+  }
+  ~QuadraticEquation() {
+    cout << "Destroyed: " << *this << endl;
+  }
+  friend ostream& operator<<(ostream& os, const QuadraticEquation& oe) {
+    os << oe.a << "x^2 + " << oe.b << "x + " << oe.c << " = 0";
+    return os;
+  }
+  friend istream& operator>>(istream& is, QuadraticEquation& oe) {
+    cout << "Input coefficients a, b, c: ";
+    is >> oe.a >> oe.b >> oe.c;
+    return is;
+  }
+  QuadraticEquation& operator=(const QuadraticEquation& src) {
+    /*QuadraticEquation& result(*this);
+    result = src;
+    return result;*/
+    a = src.a;
+    b = src.b;
+    c = src.c;
+    return *this;
+  }
+  QuadraticEquation& operator+=(const QuadraticEquation& src) {
+    a += src.a;
+    b += src.b;
+    c += src.c;
+    return *this;
+  }
+  QuadraticEquation& operator-=(const QuadraticEquation& src) {
+    a -= src.a;
+    b -= src.b;
+    c -= src.c;
+    return *this;
+  }
+  QuadraticEquation operator+(const QuadraticEquation& src) const {
+    QuadraticEquation result(*this);
+    result += src;
+    return result;
+  }
+  QuadraticEquation operator-(const QuadraticEquation& src) const {
+    QuadraticEquation result(*this);
+    result -= src;
+    return result;
+  }
+  QuadraticEquation operator*(double scalar) const {
+    return QuadraticEquation(a * scalar, b * scalar, c * scalar);
+  }
+  QuadraticEquation operator/(double scalar) const {
+    if (scalar == 0) throw invalid_argument("Division by zero");
+    return QuadraticEquation(a / scalar, b / scalar, c / scalar);
+  }
+};
+
+void calculator() {
+  QuadraticEquation eq1, eq2, eq3;
+  char operation;
+  double scalar;
+  
+  cout << "Input first equation:" << endl;
+  cin >> eq2;
+  
+  cout << "Input operation (+, -, *, /): ";
+  cin >> operation;
+  
+  switch (operation) {
+  case '+': 
+    cout << "Input second equation:" << endl;
+    cin >> eq3;
+    eq1 = eq2 + eq3;
+    break;
+  case '-':
+    cout << "Input second equation:" << endl;
+    cin >> eq3;
+    eq1 = eq2 - eq3;
+    break;
+  case '*':
+    cout << "Input scalar: ";
+    cin >> scalar;
+    eq1 = eq2 * scalar;
+    break;
+  case '/': 
+    cout << "Input scalar: ";
+    cin >> scalar;
+    try {
+      eq1 = eq2 / scalar;
+    }
+    catch (const invalid_argument& e) {
+      cout << e.what() << endl;
+      return;
+    }
+    break;
+  default:
+    cout << "Unsupported operation :(" << endl;
+  }
+  cout << "=== Result: " << eq1 << " ===" << endl;
+}
+
+int main() {
+  calculator();
+  return 0;
+}
